@@ -250,7 +250,7 @@ export const listTopProducts = () => async (dispatch) => {
   }
 }
 
-export const listProductCategory = () => async (dispatch) => {
+export const listProductCategory = (category) => async (dispatch) => {
   try {
     dispatch({ type: CATEGORY_LIST_REQUEST })
 
