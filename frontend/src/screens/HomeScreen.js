@@ -15,7 +15,9 @@ const HomeScreen = ({ match }) => {
   const keyword = match.params.keyword
   
   const pageNumber = match.params.pageNumber || 1
+  const categoryName = match.params.categoryName
 
+console.log(match.params.categoryName)
   const dispatch = useDispatch()
 
   const productList = useSelector((state) => state.productList)
@@ -23,8 +25,8 @@ const HomeScreen = ({ match }) => {
   const { loading, error, products, page, pages } = productList
 
   useEffect(() => {
-    dispatch(listProducts(keyword, pageNumber))
-  }, [dispatch, keyword, pageNumber])
+    dispatch(listProducts(keyword, pageNumber, categoryName))
+  }, [dispatch, keyword, pageNumber,categoryName])
 
   return (
     <>
@@ -56,6 +58,7 @@ const HomeScreen = ({ match }) => {
             pages={pages}
             page={page}
             keyword={keyword ? keyword : ''}
+            categoryname={categoryName ? categoryName : ''}
           />
         </>
       )}

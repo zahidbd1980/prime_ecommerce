@@ -15,7 +15,16 @@ const getProducts = asyncHandler(async (req, res) => {
           $options: 'i',
         },
       }
-    : {}
+
+     : req.query.categoryName
+      ? {
+        category: {
+            $regex: req.query.categoryName,
+            $options: 'i',
+          },
+        }
+      
+    :  {}
 
   const count = await Product.countDocuments({ ...keyword })
   const products = await Product.find({ ...keyword })
@@ -25,29 +34,7 @@ const getProducts = asyncHandler(async (req, res) => {
   res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
 
-// @desc    Fetch all products by category
-// @route   @route   POST /api/:category/products
-// @access  Public
-const getProductsByCategory = asyncHandler(async (req, res) => {
-  const pageSize = 10
-  const page = Number(req.query.pageNumber) || 1
 
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: 'i',
-        },
-      }
-    : {}
-
-  const count = await Product.countDocuments({ ...keyword })
-  const products = await Product.find({ ...keyword })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-
-  res.json({ products, page, pages: Math.ceil(count / pageSize) })
-})
 
 // @desc    Fetch all Category
 // @route   GET /api/category
