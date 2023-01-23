@@ -27,7 +27,7 @@ const s="/category/"
   ) : (
     
     <Nav  variant="pills" >
-   { productCategory.map((p)=>(<Nav.Item><LinkContainer to ="/category/Men's Pant">
+   { productCategory.map((p,i)=>(<Nav.Item key={i}><LinkContainer to ={'/'+p}>
       <Nav.Link>{p} </Nav.Link></LinkContainer>
     </Nav.Item>)) }
   </Nav>)

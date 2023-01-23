@@ -20,7 +20,7 @@ const Header = () => {
     <header>
       <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
         <Container>
-          <LinkContainer to='/page/2'>
+          <LinkContainer to='/'>
             <Navbar.Brand>ProShop</Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
