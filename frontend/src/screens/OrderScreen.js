@@ -16,6 +16,9 @@ import {
   ORDER_DELIVER_RESET,
 } from '../constants/orderConstants'
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
+
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
 
@@ -74,11 +77,29 @@ const OrderScreen = ({ match, history }) => {
         setSdkReady(true)
       }
     }
+
+    
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult)
     dispatch(payOrder(orderId, paymentResult))
+    const msg = {
+      to: order.user.email,
+      from: 'noreply@primeshop.com', // Use the email address or domain you verified above
+      subject: 'Payment Successful',
+      text: 'We have recieved your payment',
+      html: '<strong>Thank you</strong>',
+    }
+    sgMail.send(msg)
+    .then(() => {}, 
+    error => {
+      console.error(error);
+  
+      if (error.response) {
+        console.error(error.response.body)
+      }
+    })
   }
 
   const deliverHandler = () => {

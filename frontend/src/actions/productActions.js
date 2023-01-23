@@ -27,7 +27,7 @@ import {
 } from '../constants/productConstants'
 import { logout } from './userActions'
 
-export const listProducts = (keyword = '', pageNumber = '', categoryName='') => async (
+export const listProducts = (keyword = '', pageNumber = '', categoryName = '') => async (
   dispatch
 ) => {
   try {
@@ -36,7 +36,6 @@ export const listProducts = (keyword = '', pageNumber = '', categoryName='') => 
     const { data } = await axios.get(
       `/api/products?keyword=${keyword}&pageNumber=${pageNumber}&categoryName=${categoryName}`
     )
-console.log(data)
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
       payload: data,
@@ -280,7 +279,7 @@ export const listProductCategory = () => async (dispatch) => {
     dispatch({ type: CATEGORY_LIST_REQUEST })
 
     const { data } = await axios.get(`/api/products/category`)
-    
+
     dispatch({
       type: CATEGORY_LIST_SUCCESS,
       payload: data.products,
