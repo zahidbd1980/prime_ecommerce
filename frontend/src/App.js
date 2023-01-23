@@ -18,7 +18,6 @@ import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import OrderListScreen from './screens/OrderListScreen'
-import CategoryScreen from './screens/CategoryScreen'
 import Category from './components/Category'
 
 const App = () => {

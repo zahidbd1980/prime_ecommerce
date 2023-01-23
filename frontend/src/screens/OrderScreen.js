@@ -16,8 +16,8 @@ import {
   ORDER_DELIVER_RESET,
 } from '../constants/orderConstants'
 
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey('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');
+// const sgMail = require('@sendgrid/mail');
+// sgMail.setApiKey('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');
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -78,28 +78,23 @@ const OrderScreen = ({ match, history }) => {
       }
     }
 
-    
+
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult)
     dispatch(payOrder(orderId, paymentResult))
     const msg = {
-      to: order.user.email,
-      from: 'noreply@primeshop.com', // Use the email address or domain you verified above
-      subject: 'Payment Successful',
-      text: 'We have recieved your payment',
-      html: '<strong>Thank you</strong>',
+      Host: "smtp.elasticemail.com",
+      Port: 2525,
+      Username: "zishan.ahmed1210@gmail.com",
+      Password: "DEC4ABE579F004A01E9CEE0E572AD6DB8F0E",
+      To: order.user.email,
+      From: "zishan.ahmed1210@gmail.com",
+      Subject: "This is the subject",
+      Body: "And this is the body"
     }
-    sgMail.send(msg)
-    .then(() => {}, 
-    error => {
-      console.error(error);
-  
-      if (error.response) {
-        console.error(error.response.body)
-      }
-    })
+    window.Email.send(msg)
   }
 
   const deliverHandler = () => {
