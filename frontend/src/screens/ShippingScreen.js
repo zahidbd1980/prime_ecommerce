@@ -49,6 +49,13 @@ const ShippingScreen = ({ history }) => {
           ></Form.Control>
         </Form.Group>
 
+        <Form.Group className="mb-3">
+          <Form.Label>City</Form.Label>
+          <Form.Select >
+            {/* <option></option> */}
+          </Form.Select>
+        </Form.Group>
+
         <Form.Group controlId='postalCode'>
           <Form.Label>Postal Code</Form.Label>
           <Form.Control

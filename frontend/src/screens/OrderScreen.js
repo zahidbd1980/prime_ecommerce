@@ -83,7 +83,7 @@ const OrderScreen = ({ match, history }) => {
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult)
-    dispatch(payOrder(orderId, paymentResult))
+    dispatch(payOrder(orderId, paymentResult,))
     const msg = {
       Host: "smtp.elasticemail.com",
       Port: 2525,
@@ -91,10 +91,12 @@ const OrderScreen = ({ match, history }) => {
       Password: "DEC4ABE579F004A01E9CEE0E572AD6DB8F0E",
       To: order.user.email,
       From: "zishan.ahmed1210@gmail.com",
-      Subject: "This is the subject",
-      Body: "And this is the body"
+      Subject: "Payment Successful",
+      Body: "We have recieved your payment. Keep shopping with Prime Ecommerce. Thank you."
     }
     window.Email.send(msg)
+    // .then(()=>{})
+    // .catch((error)=>{error})
   }
 
   const deliverHandler = () => {
