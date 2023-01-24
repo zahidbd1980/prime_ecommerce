@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { saveShippingAddress } from '../actions/cartActions'
+import csc from "country-state-city";
 
 const ShippingScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart)
@@ -22,6 +23,13 @@ const ShippingScreen = ({ history }) => {
     history.push('/payment')
   }
 
+  const countries = csc.getAllCountries();
+
+  const updatedStates = (countryId) =>
+    csc
+      .getStatesOfCountry(countryId)
+  // .map((state) => ({ label: state.name, value: state.id, ...state }));
+
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 />
@@ -38,22 +46,32 @@ const ShippingScreen = ({ history }) => {
           ></Form.Control>
         </Form.Group>
 
+        <Form.Group controlId='country'>
+          <Form.Label>Country</Form.Label>
+          <Form.Control as="select"
+            value={country}
+            required
+            onChange={(e) => setCountry(e.target.value)}
+          >{countries.map((country) => {
+            return (
+              <option value={country.id} label={country.name} ></option>
+            )
+          })}
+          </Form.Control>
+        </Form.Group>
+
         <Form.Group controlId='city'>
           <Form.Label>City</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter city'
+          <Form.Control as="select"
             value={city}
             required
             onChange={(e) => setCity(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>City</Form.Label>
-          <Form.Select >
-            {/* <option></option> */}
-          </Form.Select>
+          >{updatedStates(country).map((state) => {
+            return (
+              <option value={state.id} label={state.name} ></option>)
+          })
+            }
+          </Form.Control>
         </Form.Group>
 
         <Form.Group controlId='postalCode'>
@@ -64,17 +82,7 @@ const ShippingScreen = ({ history }) => {
             value={postalCode}
             required
             onChange={(e) => setPostalCode(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
 
-        <Form.Group controlId='country'>
-          <Form.Label>Country</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Enter country'
-            value={country}
-            required
-            onChange={(e) => setCountry(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
