@@ -17,18 +17,17 @@ const ShippingScreen = ({ history }) => {
 
   const dispatch = useDispatch()
 
-  const submitHandler = (e) => {
-    e.preventDefault()
-    dispatch(saveShippingAddress({ address, city, postalCode, country }))
-    history.push('/payment')
-  }
-
   const countries = csc.getAllCountries();
-
   const updatedStates = (countryId) =>
     csc
       .getStatesOfCountry(countryId)
-  // .map((state) => ({ label: state.name, value: state.id, ...state }));
+
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    dispatch(saveShippingAddress({ address, city: csc.getStateById(city).name, postalCode, country: csc.getCountryById(country).name }))
+    history.push('/payment')
+  }
 
   return (
     <FormContainer>
@@ -52,9 +51,9 @@ const ShippingScreen = ({ history }) => {
             value={country}
             required
             onChange={(e) => setCountry(e.target.value)}
-          >{countries.map((country) => {
+          >{countries.map((c) => {
             return (
-              <option value={country.id} label={country.name} ></option>
+              <option value={c.id} label={c.name} ></option>
             )
           })}
           </Form.Control>
