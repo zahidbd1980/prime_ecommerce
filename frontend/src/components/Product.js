@@ -1,9 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Card } from 'react-bootstrap'
+import { Card, Button } from 'react-bootstrap'
 import Rating from './Rating'
 
-const Product = ({ product }) => {
+const Product = ({ product, history, match }) => {
+
+
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}?qty=${1}`)
+  }
+
   return (
     <Card className='my-3 p-3 rounded'>
       <Link to={`/product/${product._id}`}>
@@ -24,7 +30,14 @@ const Product = ({ product }) => {
           />
         </Card.Text>
 
-        <Card.Text as='h3'>${product.price}</Card.Text>
+        <Card.Text as='h3' >${product.price}</Card.Text>
+
+        <Button onClick={addToCartHandler}
+          disabled={product.countInStock === 0}
+          variant='success'
+          block>
+          ADD TO CART
+        </Button>
       </Card.Body>
     </Card>
   )

@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Nav } from 'react-bootstrap'
+import { Nav, NavDropdown } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import Loader from './Loader'
-import Message from './Message'
 import { listProductCategory } from '../actions/productActions'
 
 const Category = () => {
   const dispatch = useDispatch()
   const categoryList = useSelector((state) => state.categoryList)
-  const { loading, error, categories } = categoryList
+  const { categories } = categoryList
   const catList = categories.map((item) => item.category)
   const productCategory = [...new Set(catList)]
 
@@ -19,17 +17,19 @@ const Category = () => {
     dispatch(listProductCategory())
   }, [dispatch])
 
-  return loading ? (
-    <Loader />
-  ) : error ? (
-    <Message variant='danger'>{error}</Message>
-  ) : (
+  return (
+    // <Nav variant="pills" >
+    //   {productCategory.map((p, i) => (<Nav.Item key={i}><LinkContainer to={'/' + p}>
+    //     <Nav.Link>{p} </Nav.Link></LinkContainer>
+    //   </Nav.Item>))}
+    // </Nav>
 
-    <Nav variant="pills" >
-      {productCategory.map((p, i) => (<Nav.Item key={i}><LinkContainer to={'/' + p}>
-        <Nav.Link>{p} </Nav.Link></LinkContainer>
-      </Nav.Item>))}
-    </Nav>)
+    <NavDropdown title="Categories" id="navbarScrollingDropdown">
+      {productCategory.map((p, i) => (<NavDropdown.Item key={i} className='text-dark'><LinkContainer to={'/' + p}>
+        <Nav.Link className='text-dark'>{p} </Nav.Link></LinkContainer>
+      </NavDropdown.Item>))}
+    </NavDropdown>
+  )
 
 
 }
