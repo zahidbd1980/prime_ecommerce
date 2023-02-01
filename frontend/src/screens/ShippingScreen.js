@@ -20,7 +20,7 @@ const ShippingScreen = ({ history }) => {
   const countries = csc.getAllCountries();
   const updatedStates = (countryId) =>
     csc
-      .getStatesOfCountry(countryId)
+      .getStatesOfCountry(countryId);
 
 
   const submitHandler = (e) => {
@@ -51,11 +51,12 @@ const ShippingScreen = ({ history }) => {
             value={country}
             required
             onChange={(e) => setCountry(e.target.value)}
-          >{countries.map((c) => {
-            return (
-              <option value={c.id} label={c.name} ></option>
-            )
-          })}
+          >
+            {countries.map((c) => {
+              return (
+                <option value={c.id} label={c.name} ></option>
+              )
+            })}
           </Form.Control>
         </Form.Group>
 
@@ -65,10 +66,11 @@ const ShippingScreen = ({ history }) => {
             value={city}
             required
             onChange={(e) => setCity(e.target.value)}
-          >{updatedStates(country).map((state) => {
-            return (
-              <option value={state.id} label={state.name} ></option>)
-          })
+          >
+            {updatedStates(country).map((state) => {
+              return (
+                <option value={state.id} label={state.name} ></option>)
+            })
             }
           </Form.Control>
         </Form.Group>

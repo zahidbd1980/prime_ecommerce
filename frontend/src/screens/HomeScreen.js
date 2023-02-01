@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 import Product from '../components/Product'
 import Message from '../components/Message'
-import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
 import ProductCarousel from '../components/ProductCarousel'
 import Meta from '../components/Meta'
@@ -20,7 +19,7 @@ const HomeScreen = ({ match }) => {
 
   const productList = useSelector((state) => state.productList)
 
-  const { loading, error, products, page, pages } = productList
+  const { error, products, page, pages } = productList
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber, categoryName))
@@ -29,19 +28,18 @@ const HomeScreen = ({ match }) => {
   return (
     <>
       <Meta />
-      {!keyword ? (
+      {!keyword && !categoryName ? (
         <>
           <ProductCarousel />
+          <h1>Latest Products</h1>
         </>
+
       ) : (
         <Link to='/' className='btn btn-light'>
           Go Back
         </Link>
       )}
-      <h1>Latest Products</h1>
-      {loading ? (
-        <Loader />
-      ) : error ? (
+      {error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
         <>

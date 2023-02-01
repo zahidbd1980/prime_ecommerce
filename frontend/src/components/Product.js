@@ -3,12 +3,7 @@ import { Link } from 'react-router-dom'
 import { Card, Button } from 'react-bootstrap'
 import Rating from './Rating'
 
-const Product = ({ product, history, match }) => {
-
-
-  const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${1}`)
-  }
+const Product = ({ product }) => {
 
   return (
     <Card className='my-3 p-3 rounded'>
@@ -32,7 +27,8 @@ const Product = ({ product, history, match }) => {
 
         <Card.Text as='h3' >${product.price}</Card.Text>
 
-        <Button onClick={addToCartHandler}
+        <Button
+          href={`/cart/${product._id}?qty=1`}
           disabled={product.countInStock === 0}
           variant='success'
           block>
