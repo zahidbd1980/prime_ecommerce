@@ -84,6 +84,9 @@ const OrderScreen = ({ match, history }) => {
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult)
     dispatch(payOrder(orderId, paymentResult,))
+
+
+
     const msg = {
       Host: "smtp.elasticemail.com",
       Port: 2525,
@@ -92,7 +95,41 @@ const OrderScreen = ({ match, history }) => {
       To: order.user.email,
       From: "zishan.ahmed1210@gmail.com",
       Subject: "Payment Successful",
-      Body: "We have recieved your payment. Keep shopping with Prime Ecommerce. Thank you."
+      Body: `<h1>Payment Completed !</h1>
+      <p>Dear ${order.user.name},</p>
+      <p>Thank you for your recent purchase!</p>
+      <p>We are pleased to confirm that, Payment for your order <strong>${order._id}</strong> has been received and will be processed shortly.</p>
+      <h2>Order Details:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${order.orderItems.map((item, index) => (
+        <tr key={index}>
+          <td>{item.name}</td>
+          <td>{item.qty}</td>
+          <td>{item.qty} x {item.price} = {item.qty * item.price}</td>
+        </tr>
+      ))}
+          <tr>
+            <td>Total:</td>
+            <td></td>
+            <td>${order.totalPrice}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Your order will be shipped to the following address:</p>
+      <p>${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}</p>
+      <p>If you have any questions, please do not hesitate to contact us at <a href="#">info@primeecom.com</a>.</p>
+      <p>Thank you again for your order!</p>
+      <br>
+      <p>Best regards,</p>
+      <p>Prime E-commerce</p>`
     }
     window.Email.send(msg)
     // .then(()=>{})
