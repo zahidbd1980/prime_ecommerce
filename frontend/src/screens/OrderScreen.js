@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-// import { PayPalButton } from 'react-paypal-button-v2'
+import { PayPalButton } from 'react-paypal-button-v2'
 import { Link } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,16 +8,13 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import {
   getOrderDetails,
-  // payOrder,
+  payOrder,
   deliverOrder,
 } from '../actions/orderActions'
 import {
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
 } from '../constants/orderConstants'
-
-// const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey('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');
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -39,7 +36,6 @@ const OrderScreen = ({ match, history }) => {
   const { userInfo } = userLogin
 
   if (!loading) {
-    //   Calculate prices
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2)
     }
@@ -81,9 +77,8 @@ const OrderScreen = ({ match, history }) => {
 
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
-  const successPaymentHandler = () => {
-    // paymentResult
-    // dispatch(payOrder(orderId, paymentResult,))
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult,))
 
     const msg = {
       Host: "smtp.elasticemail.com",
@@ -263,20 +258,19 @@ const OrderScreen = ({ match, history }) => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              <Button onClick={successPaymentHandler}>Click</Button>
-              {/* {!order.isPaid && (
+              {!order.isPaid && (
                 <ListGroup.Item>
-                   {loadingPay && <Loader />}
+                  {loadingPay && <Loader />}
                   {!sdkReady ? (
                     <Loader />
-                  ) : ( 
+                  ) : (
                     <PayPalButton
-                    amount={order.totalPrice}
-                    onSuccess={successPaymentHandler}
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
                     />
                   )}
                 </ListGroup.Item>
-              )} */}
+              )}
               {loadingDeliver && <Loader />}
               {userInfo &&
                 userInfo.isAdmin &&
