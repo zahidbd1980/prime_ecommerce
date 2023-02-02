@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { PayPalButton } from 'react-paypal-button-v2'
+// import { PayPalButton } from 'react-paypal-button-v2'
 import { Link } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,7 +8,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import {
   getOrderDetails,
-  payOrder,
+  // payOrder,
   deliverOrder,
 } from '../actions/orderActions'
 import {
@@ -81,11 +81,9 @@ const OrderScreen = ({ match, history }) => {
 
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
-  const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult)
-    dispatch(payOrder(orderId, paymentResult,))
-
-
+  const successPaymentHandler = () => {
+    // paymentResult
+    // dispatch(payOrder(orderId, paymentResult,))
 
     const msg = {
       Host: "smtp.elasticemail.com",
@@ -95,41 +93,56 @@ const OrderScreen = ({ match, history }) => {
       To: order.user.email,
       From: "zishan.ahmed1210@gmail.com",
       Subject: "Payment Successful",
-      Body: `<h1>Payment Completed !</h1>
-      <p>Dear ${order.user.name},</p>
+      Body: `<body style="margin: auto;width: 50%;font-size:14px;">
+      <h1 style="color:green">Payment Completed !</h1>
+      <p>Dear <strong>${order.user.name}</strong>,</p>
       <p>Thank you for your recent purchase!</p>
-      <p>We are pleased to confirm that, Payment for your order <strong>${order._id}</strong> has been received and will be processed shortly.</p>
+      <p>We are pleased to confirm that, Payment for your order: <strong>${order._id}</strong> has been received and will be processed shortly.</p>
       <h2>Order Details:</h2>
       <table>
         <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
+          <tr style="background-color:cyan;text-align: center;">
+            <th style="width:300px;height:25px;text-align: center;">Product Name</th>
+            <th style="width:150px;height:25px;text-align: center;">Quantity</th>
+            <th style="width:150px;height:30px;text-align: center;">Price</th>
           </tr>
         </thead>
         <tbody>
-          ${order.orderItems.map((item, index) => (
-        <tr key={index}>
-          <td>{item.name}</td>
-          <td>{item.qty}</td>
-          <td>{item.qty} x {item.price} = {item.qty * item.price}</td>
-        </tr>
-      ))}
-          <tr>
-            <td>Total:</td>
+         
+         ${order.orderItems.map((item) => (
+        '<tr><td style="text-align: center;">' + item.name + '</td><td style="text-align: center;">' + item.qty + '</td><td style="text-align: center;">' + item.price + '</td></tr>'))}
+        <hr style="width:200%;">
+        <tr>
             <td></td>
-            <td>${order.totalPrice}</td>
+            <td style="text-align: center;"><strong>Items Total Price</strong></td>
+            <td style="text-align: center;"><strong>${order.itemsPrice}</strong></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="text-align: center;"><strong>Shipping</strong></td>
+            <td style="text-align: center;"><strong>${order.shippingPrice}</strong></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="text-align: center;"><strong>Tax</strong></td>
+            <td style="text-align: center;"><strong>${order.taxPrice}</strong></td>
+        </tr>
+        <hr style="width:120%;margin-left:17em;margin-right:auto">   
+        <tr>
+            <td></td>
+            <td style="text-align: center;"><strong>Grand Total</strong></td>
+            <td style="text-align: center;"><strong>$${order.totalPrice}</strong></td>
           </tr>
         </tbody>
       </table>
-      <p>Your order will be shipped to the following address:</p>
-      <p>${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}</p>
+      <p>Your order will be shipped to the following address:<br>
+      <strong>${order.shippingAddress.address}, ${order.shippingAddress.city}- ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}</strong></p>
       <p>If you have any questions, please do not hesitate to contact us at <a href="#">info@primeecom.com</a>.</p>
       <p>Thank you again for your order!</p>
       <br>
       <p>Best regards,</p>
-      <p>Prime E-commerce</p>`
+      <p>Prime E-commerce</p>
+      </body>`
     }
     window.Email.send(msg)
     // .then(()=>{})
@@ -250,19 +263,20 @@ const OrderScreen = ({ match, history }) => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              {!order.isPaid && (
+              <Button onClick={successPaymentHandler}>Click</Button>
+              {/* {!order.isPaid && (
                 <ListGroup.Item>
-                  {loadingPay && <Loader />}
+                   {loadingPay && <Loader />}
                   {!sdkReady ? (
                     <Loader />
-                  ) : (
+                  ) : ( 
                     <PayPalButton
-                      amount={order.totalPrice}
-                      onSuccess={successPaymentHandler}
+                    amount={order.totalPrice}
+                    onSuccess={successPaymentHandler}
                     />
                   )}
                 </ListGroup.Item>
-              )}
+              )} */}
               {loadingDeliver && <Loader />}
               {userInfo &&
                 userInfo.isAdmin &&
