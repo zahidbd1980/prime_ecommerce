@@ -51,7 +51,7 @@ const OrderScreen = ({ match, history }) => {
     }
 
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get('/sslcommerzpay')
+      const { data: clientId } = await axios.get('/api/config/paypal')
       const script = document.createElement('script')
       script.type = 'text/javascript'
       script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
@@ -79,40 +79,46 @@ const OrderScreen = ({ match, history }) => {
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
 
-  // const sslCommerzPay = async () => {
-  //   const data = {
-  //     total_amount: 100,
-  //     currency: 'BDT',
-  //     tran_id: 'REF123', // use unique tran_id for each api call
-  //     success_url: 'http://localhost:3030/success',
-  //     fail_url: 'http://localhost:3030/fail',
-  //     cancel_url: 'http://localhost:3030/cancel',
-  //     ipn_url: 'http://localhost:3030/ipn',
-  //     shipping_method: 'Courier',
-  //     product_name: 'Computer.',
-  //     product_category: 'Electronic',
-  //     product_profile: 'general',
-  //     cus_name: 'Customer Name',
-  //     cus_email: 'customer@example.com',
-  //     cus_add1: 'Dhaka',
-  //     cus_add2: 'Dhaka',
-  //     cus_city: 'Dhaka',
-  //     cus_state: 'Dhaka',
-  //     cus_postcode: '1000',
-  //     cus_country: 'Bangladesh',
-  //     cus_phone: '01711111111',
-  //     cus_fax: '01711111111',
-  //     ship_name: 'Customer Name',
-  //     ship_add1: 'Dhaka',
-  //     ship_add2: 'Dhaka',
-  //     ship_city: 'Dhaka',
-  //     ship_state: 'Dhaka',
-  //     ship_postcode: 1000,
-  //     ship_country: 'Bangladesh',
-  //   }
-  //   await axios.get('/sslcommerzpay', data)
+  const sslCommerzPay = () => {
+    const data = {
+      total_amount: 100,
+      currency: 'BDT',
+      tran_id: 'REF123',
+      success_url: 'http://localhost:3030/success',
+      fail_url: 'http://localhost:3030/fail',
+      cancel_url: 'http://localhost:3030/cancel',
+      ipn_url: 'http://localhost:3030/ipn',
+      shipping_method: 'Courier',
+      product_name: 'Computer.',
+      product_category: 'Electronic',
+      product_profile: 'general',
+      cus_name: 'Customer Name',
+      cus_email: 'customer@example.com',
+      cus_add1: 'Dhaka',
+      cus_add2: 'Dhaka',
+      cus_city: 'Dhaka',
+      cus_state: 'Dhaka',
+      cus_postcode: '1000',
+      cus_country: 'Bangladesh',
+      cus_phone: '01711111111',
+      cus_fax: '01711111111',
+      ship_name: 'Customer Name',
+      ship_add1: 'Dhaka',
+      ship_add2: 'Dhaka',
+      ship_city: 'Dhaka',
+      ship_state: 'Dhaka',
+      ship_postcode: 1000,
+      ship_country: 'Bangladesh',
+    };
 
-  // }
+    axios.get('/sslcommerzpay', { params: data })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
 
   const successPaymentHandler = (paymentResult) => {
@@ -317,6 +323,7 @@ const OrderScreen = ({ match, history }) => {
                     />
                   )}
                 </ListGroup.Item>
+
               )}
 
               {loadingDeliver && <Loader />}
@@ -333,13 +340,16 @@ const OrderScreen = ({ match, history }) => {
                       Mark As Delivered
                     </Button>
                   </ListGroup.Item>
+
                 )}
             </ListGroup>
-            {/* <Button
-              onClick={sslCommerzPay}
+            <Button
+              variant='warning'
+              tex
+              onClick={sslCommerzPay()}
             >
               SSL Commerz Payment
-            </Button> */}
+            </Button>
           </Card>
         </Col>
       </Row>
