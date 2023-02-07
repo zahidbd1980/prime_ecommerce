@@ -82,13 +82,9 @@ const OrderScreen = ({ match, history }) => {
 
   const sslCommerzPay = () => {
 
-    const getProductNames = (order) => {
-      return order.orderItems.map((item) => {
-        return item.name;
-      });
-    };
+    const productNames = ''
 
-    const productNames = getProductNames({ order });
+    order.orederItems.map((item) => productNames = item.name + ',')
 
 
     const data = {
