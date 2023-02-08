@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
@@ -68,7 +68,7 @@ const OrderScreen = ({ match, history }) => {
       dispatch({ type: ORDER_DELIVER_RESET })
       dispatch(getOrderDetails(orderId))
     } else if (!order.isPaid) {
-      if (!window.paypal) {
+      if (!window.paypal && !window) {
         addPayPalScript()
       } else {
         setSdkReady(true)
@@ -80,57 +80,11 @@ const OrderScreen = ({ match, history }) => {
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
 
-  const sslCommerzPay = () => {
 
-    const productNames = ''
-
-    order.orederItems.map((item) => productNames = item.name + ',')
-
-
-    const data = {
-      total_amount: order.totalPrice,
-      currency: 'USD',
-      tran_id: order._id,
-      success_url: 'http://localhost:3000/ssl-pay-success',
-      fail_url: 'http://localhost:3000/ssl-pay-fail',
-      cancel_url: 'http://localhost:3000/ssl-pay-cancel',
-      ipn_url: 'http://localhost:3000/ssl-pay-ipn',
-      shipping_method: 'Courier',
-      product_name: productNames,
-      product_category: 'Clothing',
-      product_profile: 'General',
-      cus_name: order.user.name,
-      cus_email: order.user.email,
-      cus_add1: order.shippingAddress.address,
-      cus_add2: order.shippingAddress.address,
-      cus_city: order.shippingAddress.city,
-      cus_state: order.shippingAddress.city,
-      cus_postcode: order.shippingAddress.postalCode,
-      cus_country: order.shippingAddress.country,
-      cus_phone: '01711111111',
-      cus_fax: '01711111111',
-      ship_name: order.user.name,
-      ship_add1: order.shippingAddress.address,
-      ship_add2: order.shippingAddress.address,
-      ship_city: order.shippingAddress.city,
-      ship_state: order.shippingAddress.city,
-      ship_postcode: order.shippingAddress.postalCode,
-      ship_country: order.shippingAddress.country,
-    };
-
-    axios.get('/api/config/sslcommerzpay', { params: data })
-      .then(
-        response => {
-          window.location.href = response.data.GatewayPageURL;
-        }
-      )
-      .catch(error => {
-        console.log(error);
-      });
-  }
 
 
   const successPaymentHandler = (paymentResult) => {
+
     dispatch(payOrder(orderId, paymentResult,))
 
     const msg = {
@@ -161,7 +115,6 @@ const OrderScreen = ({ match, history }) => {
         return (
           `<tr>
           <td>${item.name}</td>
-          ${console.log(item.name)}
           <td style="text-align: center;">${item.qty}</td>
           <td style="text-align: center;">${item.price}</td>
           </tr>`
@@ -206,6 +159,81 @@ const OrderScreen = ({ match, history }) => {
     // .then(()=>{})
     // .catch((error)=>{error})
   }
+
+
+
+
+
+
+
+
+
+  const sslCommerzPay = () => {
+
+    let productNames = ''
+
+    order.orderItems.map((item) => (productNames = productNames + item.name + ','))
+
+
+    const data = {
+      total_amount: order.totalPrice,
+      currency: 'USD',
+      tran_id: order._id,
+      success_url: 'http://localhost:3000/ssl-pay-success',
+      fail_url: 'http://localhost:3000/ssl-pay-fail',
+      cancel_url: 'http://localhost:3000/ssl-pay-cancel',
+      ipn_url: 'http://localhost:3000/ssl-pay-ipn',
+      shipping_method: 'Courier',
+      product_name: productNames,
+      product_category: 'Clothing',
+      product_profile: 'General',
+      cus_name: order.user.name,
+      cus_email: order.user.email,
+      cus_add1: order.shippingAddress.address,
+      cus_add2: order.shippingAddress.address,
+      cus_city: order.shippingAddress.city,
+      cus_state: order.shippingAddress.city,
+      cus_postcode: order.shippingAddress.postalCode,
+      cus_country: order.shippingAddress.country,
+      cus_phone: '01711111111',
+      cus_fax: '01711111111',
+      ship_name: order.user.name,
+      ship_add1: order.shippingAddress.address,
+      ship_add2: order.shippingAddress.address,
+      ship_city: order.shippingAddress.city,
+      ship_state: order.shippingAddress.city,
+      ship_postcode: order.shippingAddress.postalCode,
+      ship_country: order.shippingAddress.country,
+    };
+
+    axios.get('/api/config/sslcommerzpay', { params: data })
+      .then(
+        response => {
+          const paymentResultSsl = {
+            id: order._id,
+            status: "COMPLETED",
+            update_time: "2023-02-08T18:48:34Z",
+            payer: { email_address: order.user.email, }
+
+          }
+          window.location.href = response.data.GatewayPageURL;
+          successPaymentHandler(paymentResultSsl);
+          // axios.get('/ssl-pay-success')
+          //   .then(
+          //     response => {
+          //       if (response.data.message) {
+          //         return <Redirect push to='/order/:id' />
+          //       }
+          //     }
+          //   )
+        }
+      )
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+
 
   const deliverHandler = () => {
     dispatch(deliverOrder(order))
@@ -327,10 +355,18 @@ const OrderScreen = ({ match, history }) => {
                   {!sdkReady ? (
                     <Loader />
                   ) : (
-                    <PayPalButton
-                      amount={order.totalPrice}
-                      onSuccess={successPaymentHandler}
-                    />
+                    <>
+                      <PayPalButton
+                        amount={order.totalPrice}
+                        onSuccess={successPaymentHandler}
+                      />
+                      <Button
+                        variant='warning'
+                        onClick={sslCommerzPay}
+                      >
+                        SSL Commerz Payment
+                      </Button>
+                    </>
                   )}
                 </ListGroup.Item>
 
@@ -353,13 +389,7 @@ const OrderScreen = ({ match, history }) => {
 
                 )}
             </ListGroup>
-            <Button
-              variant='warning'
-              tex
-              onClick={sslCommerzPay}
-            >
-              SSL Commerz Payment
-            </Button>
+
           </Card>
         </Col>
       </Row>

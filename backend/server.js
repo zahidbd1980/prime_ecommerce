@@ -58,8 +58,21 @@ app.get('/api/config/sslcommerzpay', async (req, res, next) => {
       return res.status(500).json({ message: error.message });
     });
 
-
 })
+
+// app.post('/ssl-pay-success', async (req, res, next) => {
+//   return res.status(200).json({
+//     data: {
+//       "message": "success"
+//     }
+//   })
+// })
+
+// app.post('/ssl-pay-ipn', async (req, res, next) => {
+//   return res.status(200).json({
+//     data: req.body
+//   })
+// })
 
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))

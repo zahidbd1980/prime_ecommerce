@@ -121,7 +121,8 @@ export const payOrder = (orderId, paymentResult) => async (
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
-
+    console.log(config)
+    console.log(paymentResult)
     const { data } = await axios.put(
       `/api/orders/${orderId}/pay`,
       paymentResult,
