@@ -20,7 +20,7 @@ const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
 
   const [sdkReady, setSdkReady] = useState(false)
-  // const [link, setLink] = useState('')
+  const [resdata, setResData] = useState({})
 
   const dispatch = useDispatch()
 
@@ -46,6 +46,7 @@ const OrderScreen = ({ match, history }) => {
     )
   }
 
+
   useEffect(() => {
     if (!userInfo) {
       history.push('/login')
@@ -63,12 +64,14 @@ const OrderScreen = ({ match, history }) => {
       document.body.appendChild(script)
     }
 
+
     if (!order || successPay || successDeliver || order._id !== orderId) {
       dispatch({ type: ORDER_PAY_RESET })
       dispatch({ type: ORDER_DELIVER_RESET })
       dispatch(getOrderDetails(orderId))
+
     } else if (!order.isPaid) {
-      if (!window.paypal && !window) {
+      if (!window.paypal) {
         addPayPalScript()
       } else {
         setSdkReady(true)
@@ -78,9 +81,6 @@ const OrderScreen = ({ match, history }) => {
 
 
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
-
-
-
 
 
   const successPaymentHandler = (paymentResult) => {
@@ -156,24 +156,14 @@ const OrderScreen = ({ match, history }) => {
       </body>`
     }
     window.Email.send(msg)
-    // .then(()=>{})
-    // .catch((error)=>{error})
   }
 
 
-
-
-
-
-
-
-
-  const sslCommerzPay = () => {
+  const sslCommerzPay = async () => {
 
     let productNames = ''
 
     order.orderItems.map((item) => (productNames = productNames + item.name + ','))
-
 
     const data = {
       total_amount: order.totalPrice,
@@ -206,31 +196,54 @@ const OrderScreen = ({ match, history }) => {
       ship_country: order.shippingAddress.country,
     };
 
-    axios.get('/api/config/sslcommerzpay', { params: data })
+    await axios.get('/api/config/sslcommerzpay', { params: data })
       .then(
         response => {
-          const paymentResultSsl = {
-            id: order._id,
-            status: "COMPLETED",
-            update_time: "2023-02-08T18:48:34Z",
-            payer: { email_address: order.user.email, }
 
-          }
           window.location.href = response.data.GatewayPageURL;
-          successPaymentHandler(paymentResultSsl);
-          // axios.get('/ssl-pay-success')
-          //   .then(
-          //     response => {
-          //       if (response.data.message) {
-          //         return <Redirect push to='/order/:id' />
-          //       }
-          //     }
-          //   )
+
+
+          // const result = axios.post('/ssl-pay-success', {
+          //   resdata: {
+          //     "message": "success"
+          //   }
+          // })
+          // setResData(result.resdata);
+          // if (resdata) {
+          //   return <><Redirect push to='/order/:id' /></>;
+          // }
         }
       )
       .catch(error => {
         console.log(error);
       });
+
+    await axios.post('/ssl-pay-success', {
+      message: "success"
+    }).then(
+      respon => {
+        // if (respon.data) {
+        //   const paymentResultSsl = {
+        //     id: order._id,
+        //     status: "COMPLETED",
+        //     update_time: "2023-02-08T18:48:34Z",
+        //     payer: { email_address: order.user.email, }
+
+        //   }
+        //   successPaymentHandler(paymentResultSsl);
+        // }
+        console.log(respon)
+      }
+    )
+
+    // const fetchData = async () => {
+
+    //   setResData(result.resdata);
+    // };
+    // fetchData();
+    // if (resdata) {
+    //   history.push('/order/:id');
+    // }
   }
 
 
@@ -363,6 +376,13 @@ const OrderScreen = ({ match, history }) => {
                       <Button
                         variant='warning'
                         onClick={sslCommerzPay}
+                      // onClickCapture={successPaymentHandler({
+                      //   id: order._id,
+                      //   status: "COMPLETED",
+                      //   update_time: "2023-02-08T18:48:34Z",
+                      //   payer: { email_address: order.user.email, }
+
+                      // })}
                       >
                         SSL Commerz Payment
                       </Button>

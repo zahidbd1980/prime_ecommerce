@@ -1,5 +1,5 @@
 import path from 'path'
-import express, { urlencoded } from 'express'
+import express, { response, urlencoded } from 'express'
 import dotenv from 'dotenv'
 import colors from 'colors'
 import morgan from 'morgan'
@@ -45,12 +45,6 @@ app.get('/api/config/sslcommerzpay', async (req, res, next) => {
 
   const data = req.query;
 
-  // sslcz.init(data).then((data) => {
-  //   if (data?.GatewayPageURL) {
-  //     return res.status(200).redirect(data?.GatewayPageURL)
-  //   }
-  // })
-
   sslcz.init(data)
     .then((data) => {
       return res.status(200).json({ GatewayPageURL: data?.GatewayPageURL });
@@ -60,13 +54,11 @@ app.get('/api/config/sslcommerzpay', async (req, res, next) => {
 
 })
 
-// app.post('/ssl-pay-success', async (req, res, next) => {
-//   return res.status(200).json({
-//     data: {
-//       "message": "success"
-//     }
-//   })
-// })
+app.post('/ssl-pay-success', async (req, res, next) => {
+  return res.status(200).json({
+    data: req.body
+  })
+})
 
 // app.post('/ssl-pay-ipn', async (req, res, next) => {
 //   return res.status(200).json({
