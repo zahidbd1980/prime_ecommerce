@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
@@ -15,12 +15,12 @@ import {
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
 } from '../constants/orderConstants'
+import { bold } from 'colors'
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
 
   const [sdkReady, setSdkReady] = useState(false)
-  const [resdata, setResData] = useState({})
 
   const dispatch = useDispatch()
 
@@ -77,9 +77,6 @@ const OrderScreen = ({ match, history }) => {
         setSdkReady(true)
       }
     }
-
-
-
   }, [dispatch, history, orderId, userInfo, successPay, successDeliver, order])
 
 
@@ -159,10 +156,24 @@ const OrderScreen = ({ match, history }) => {
   }
 
 
-  const sslCommerzPay = async () => {
+  // function handleRedirect(response) {
+  //   const sucUrl = response.data.redirectLink;
+  //   window.location.href = sucUrl;
+  // }
+
+
+
+  const submitData = () => {
+    const data = {
+      sucUrl: `http://localhost:3000/order/${order._id}`
+    };
+    axios.post('/ssl-pay-success', { params: data })
+
+  }
+
+  const sslCommerzPay = () => {
 
     let productNames = ''
-
     order.orderItems.map((item) => (productNames = productNames + item.name + ','))
 
     const data = {
@@ -196,61 +207,36 @@ const OrderScreen = ({ match, history }) => {
       ship_country: order.shippingAddress.country,
     };
 
-    await axios.get('/api/config/sslcommerzpay', { params: data })
+    axios.get('/api/config/sslcommerzpay', { params: data })
       .then(
         response => {
+          const paymentResultSsl = {
+            id: order._id,
+            status: "COMPLETED",
+            update_time: "2023-02-08T18:48:34Z",
+            payer: { email_address: order.user.email, }
 
+          }
           window.location.href = response.data.GatewayPageURL;
-
-
-          // const result = axios.post('/ssl-pay-success', {
-          //   resdata: {
-          //     "message": "success"
-          //   }
-          // })
-          // setResData(result.resdata);
-          // if (resdata) {
-          //   return <><Redirect push to='/order/:id' /></>;
-          // }
+          successPaymentHandler(paymentResultSsl);
+          // const redirectLink = `http://localhost:3000/order/${order._id}`
+          // window.location.href = redirectLink;
         }
       )
       .catch(error => {
         console.log(error);
       });
 
-    await axios.post('/ssl-pay-success', {
-      message: "success"
-    }).then(
-      respon => {
-        // if (respon.data) {
-        //   const paymentResultSsl = {
-        //     id: order._id,
-        //     status: "COMPLETED",
-        //     update_time: "2023-02-08T18:48:34Z",
-        //     payer: { email_address: order.user.email, }
+    submitData();
 
-        //   }
-        //   successPaymentHandler(paymentResultSsl);
-        // }
-        console.log(respon)
-      }
-    )
-
-    // const fetchData = async () => {
-
-    //   setResData(result.resdata);
-    // };
-    // fetchData();
-    // if (resdata) {
-    //   history.push('/order/:id');
-    // }
   }
-
 
 
   const deliverHandler = () => {
     dispatch(deliverOrder(order))
   }
+
+
 
   return loading ? (
     <Loader />
@@ -363,32 +349,32 @@ const OrderScreen = ({ match, history }) => {
                 </Row>
               </ListGroup.Item>
               {!order.isPaid && (
-                <ListGroup.Item>
-                  {loadingPay && <Loader />}
-                  {!sdkReady ? (
-                    <Loader />
-                  ) : (
-                    <>
+                <>
+                  <ListGroup.Item>
+                    {loadingPay && <Loader />}
+                    {!sdkReady ? (
+                      <Loader />
+                    ) : (
+
                       <PayPalButton
                         amount={order.totalPrice}
                         onSuccess={successPaymentHandler}
                       />
-                      <Button
-                        variant='warning'
-                        onClick={sslCommerzPay}
-                      // onClickCapture={successPaymentHandler({
-                      //   id: order._id,
-                      //   status: "COMPLETED",
-                      //   update_time: "2023-02-08T18:48:34Z",
-                      //   payer: { email_address: order.user.email, }
 
-                      // })}
-                      >
-                        SSL Commerz Payment
-                      </Button>
-                    </>
-                  )}
-                </ListGroup.Item>
+                    )}
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <Button
+                      variant='warning'
+                      className='rounded text-dark'
+                      onClick={sslCommerzPay}
+                      block
+                      style={{ fontSize: 16, fontWeight: bold }}
+                    >
+                      SSL Commerz Payment
+                    </Button>
+                  </ListGroup.Item>
+                </>
 
               )}
 
