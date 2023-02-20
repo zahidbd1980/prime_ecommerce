@@ -84,94 +84,96 @@ const OrderScreen = ({ match, history }) => {
 
     dispatch(payOrder(orderId, paymentResult,))
 
-    const msg = {
-      Host: "smtp.elasticemail.com",
-      Port: 2525,
-      Username: "zishan.ahmed1210@gmail.com",
-      Password: "DEC4ABE579F004A01E9CEE0E572AD6DB8F0E",
-      To: order.user.email,
-      From: "zishan.ahmed1210@gmail.com",
-      Subject: "Payment Successful",
-      Body: `<body style="margin: auto;width: 50%;font-size:14px;">
-      <h1 style="color:green">Payment Completed !</h1>
-      <p>Dear <strong>${order.user.name}</strong>,</p>
-      <p>Thank you for your recent purchase!</p>
-      <p>We are pleased to confirm that, Payment for your order: <strong>${order._id}</strong> has been received and will be processed shortly.</p>
-      <h2>Order Details:</h2>
-      <table>
-        <thead>
-          <tr style="background-color:cyan;text-align: center;">
-            <th style="width:300px;height:25px;text-align: center;">Product Name</th>
-            <th style="width:150px;height:25px;text-align: center;">Quantity</th>
-            <th style="width:150px;height:30px;text-align: center;">Price</th>
-          </tr>
-        </thead>
-        <tbody>
-        
-         ${order.orderItems.map((item) => {
-        return (
-          `<tr>
-          <td>${item.name}</td>
-          <td style="text-align: center;">${item.qty}</td>
-          <td style="text-align: center;">${item.price}</td>
-          </tr>`
-        )
-      })
-        }
-        
-        <hr style="width:200%;">
-        <tr>
-            <td></td>
-            <td style="text-align: center;"><strong>Items Total Price</strong></td>
-            <td style="text-align: center;"><strong>${order.itemsPrice}</strong></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="text-align: center;"><strong>Shipping</strong></td>
-            <td style="text-align: center;"><strong>${order.shippingPrice}</strong></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="text-align: center;"><strong>Tax</strong></td>
-            <td style="text-align: center;"><strong>${order.taxPrice}</strong></td>
-        </tr>
-        <hr style="width:120%;margin-left:17em;margin-right:auto">   
-        <tr>
-            <td></td>
-            <td style="text-align: center;"><strong>Grand Total</strong></td>
-            <td style="text-align: center;"><strong>$${order.totalPrice}</strong></td>
-          </tr>
-        </tbody>
-      </table>
-      <p>Your order will be shipped to the following address:<br>
-      <strong>${order.shippingAddress.address}, ${order.shippingAddress.city}- ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}</strong></p>
-      <p>If you have any questions, please do not hesitate to contact us at <a href="#">info@primeecom.com</a>.</p>
-      <p>Thank you again for your order!</p>
-      <br>
-      <p>Best regards,</p>
-      <p>Prime E-commerce</p>
-      </body>`
-    }
-    window.Email.send(msg)
+    // const msg = {
+    //   Host: "smtp.elasticemail.com",
+    //   Port: 2525,
+    //   Username: "zishan.ahmed1210@gmail.com",
+    //   Password: "DEC4ABE579F004A01E9CEE0E572AD6DB8F0E",
+    //   To: order.user.email,
+    //   From: "zishan.ahmed1210@gmail.com",
+    //   Subject: "Payment Successful",
+    //   Body: `<body style="margin: auto;width: 50%;font-size:14px;">
+    //   <h1 style="color:green">Payment Completed !</h1>
+    //   <p>Dear <strong>${order.user.name}</strong>,</p>
+    //   <p>Thank you for your recent purchase!</p>
+    //   <p>We are pleased to confirm that, Payment for your order: <strong>${order._id}</strong> has been received and will be processed shortly.</p>
+    //   <h2>Order Details:</h2>
+    //   <table>
+    //     <thead>
+    //       <tr style="background-color:cyan;text-align: center;">
+    //         <th style="width:300px;height:25px;text-align: center;">Product Name</th>
+    //         <th style="width:150px;height:25px;text-align: center;">Quantity</th>
+    //         <th style="width:150px;height:30px;text-align: center;">Price</th>
+    //       </tr>
+    //     </thead>
+    //     <tbody>
+
+    //      ${order.orderItems.map((item) => {
+    //     return (
+    //       `<tr>
+    //       <td>${item.name}</td>
+    //       <td style="text-align: center;">${item.qty}</td>
+    //       <td style="text-align: center;">${item.price}</td>
+    //       </tr>`
+    //     )
+    //   })
+    //     }
+
+    //     <hr style="width:200%;">
+    //     <tr>
+    //         <td></td>
+    //         <td style="text-align: center;"><strong>Items Total Price</strong></td>
+    //         <td style="text-align: center;"><strong>${order.itemsPrice}</strong></td>
+    //     </tr>
+    //     <tr>
+    //         <td></td>
+    //         <td style="text-align: center;"><strong>Shipping</strong></td>
+    //         <td style="text-align: center;"><strong>${order.shippingPrice}</strong></td>
+    //     </tr>
+    //     <tr>
+    //         <td></td>
+    //         <td style="text-align: center;"><strong>Tax</strong></td>
+    //         <td style="text-align: center;"><strong>${order.taxPrice}</strong></td>
+    //     </tr>
+    //     <hr style="width:120%;margin-left:17em;margin-right:auto">   
+    //     <tr>
+    //         <td></td>
+    //         <td style="text-align: center;"><strong>Grand Total</strong></td>
+    //         <td style="text-align: center;"><strong>$${order.totalPrice}</strong></td>
+    //       </tr>
+    //     </tbody>
+    //   </table>
+    //   <p>Your order will be shipped to the following address:<br>
+    //   <strong>${order.shippingAddress.address}, ${order.shippingAddress.city}- ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}</strong></p>
+    //   <p>If you have any questions, please do not hesitate to contact us at <a href="#">info@primeecom.com</a>.</p>
+    //   <p>Thank you again for your order!</p>
+    //   <br>
+    //   <p>Best regards,</p>
+    //   <p>Prime E-commerce</p>
+    //   </body>`
+    // }
+    // window.Email.send(msg)
   }
 
 
-  // function handleRedirect(response) {
-  //   const sucUrl = response.data.redirectLink;
-  //   window.location.href = sucUrl;
-  // }
 
 
 
-  const submitData = () => {
+  const submitData = async () => {
     const data = {
       sucUrl: `http://localhost:3000/order/${order._id}`
     };
-    axios.post('/ssl-pay-success', { params: data })
 
-  }
+    try {
+      const response = await axios.post('/ssl-pay-success', data);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const sslCommerzPay = () => {
+
+  const sslCommerzPay = async () => {
 
     let productNames = ''
     order.orderItems.map((item) => (productNames = productNames + item.name + ','))
@@ -206,10 +208,10 @@ const OrderScreen = ({ match, history }) => {
       ship_postcode: order.shippingAddress.postalCode,
       ship_country: order.shippingAddress.country,
     };
-
-    axios.get('/api/config/sslcommerzpay', { params: data })
+    await axios.get('/api/config/sslcommerzpay', { params: data })
       .then(
         response => {
+
           const paymentResultSsl = {
             id: order._id,
             status: "COMPLETED",
@@ -217,8 +219,9 @@ const OrderScreen = ({ match, history }) => {
             payer: { email_address: order.user.email, }
 
           }
-          window.location.href = response.data.GatewayPageURL;
           successPaymentHandler(paymentResultSsl);
+          window.location.href = response.data.GatewayPageURL;
+
           // const redirectLink = `http://localhost:3000/order/${order._id}`
           // window.location.href = redirectLink;
         }
@@ -226,7 +229,6 @@ const OrderScreen = ({ match, history }) => {
       .catch(error => {
         console.log(error);
       });
-
     submitData();
 
   }

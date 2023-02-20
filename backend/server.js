@@ -53,11 +53,11 @@ app.get('/api/config/sslcommerzpay', async (req, res, next) => {
     });
 })
 
-app.post('/ssl-pay-success', (req, res) => {
+app.post('/ssl-pay-success', async (req, res, next) => {
   const redirectLink = req.body.sucUrl;
+  console.log(redirectLink)
 
   res.redirect(redirectLink);
-  console.log(redirectLink)
 });
 
 const __dirname = path.resolve()
